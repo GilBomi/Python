@@ -1,8 +1,9 @@
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
+import pymysql
 #html=urlopen("http://www.tjmedia.co.kr/tjsong/song_search_list.asp")
 
-html = urlopen("http://www.tjmedia.co.kr/tjsong/song_search_list.asp?strType=2&strText=%EB%B0%A9%ED%83%84%EC%86%8C%EB%85%84%EB%8B%A8&strCond=0&searchOrderItem=&searchOrderType=")
+html = urlopen("https://www.tjmedia.co.kr/tjsong/song_search_list.asp?strType=2&strText=beyonce&strCond=0&searchOrderType=&searchOrderItem=&intPage=2")
 bsObject = BeautifulSoup(html,"html.parser")
 # http://www.ikaraoke.kr/isong/search_newsong.asp?page=2&s_date=201908
 # http://www.ikaraoke.kr/isong/search_newsong.asp?page=3&s_date=201908
@@ -37,7 +38,19 @@ for i, cover in data:
     if ((i-46) % 6) == 0:
         singer.append(arr)
 
-for i in title:
-    print(i)
+# del title[8]
+# del title[8]
 
+conn = pymysql.connect(host='localhost', user='root', password='test123', db='songs', port=3306)
+curs = conn.cursor()
+
+for i in range(len(title)):
+    print(number[i]+" "+title[i])
 #
+# # #
+for i in range(len(title)):
+    curs = conn.cursor()
+    sql = "insert into tj(num,name,singer) values(%s,%s,'Beyonce');"
+    curs.execute(sql,(number[i],title[i]))
+    conn.commit()
+
